@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Especialidad{% endblock %}
+
+{% block body %}
+    <h1>Create new Especialidad</h1>
+
+    {{ include('especialidad/_form.html.twig') }}
+
+    <a href="{{ path('app_especialidad_index') }}">back to list</a>
+{% endblock %}

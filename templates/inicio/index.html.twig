@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block body %}
+<h1>Hola, {{ app.user.nombre }} </h1>
+<p>¿Qué quieres hacer?</p>
+
+{#<a href="{{ path('ruta_para_consulta_medica') }}" class="btn btn-primary">Consulta Médica</a>
+<a href="{{ path('ruta_para_gestion_citas') }}" class="btn btn-primary">Gestión de Citas</a> #}
+
+
+{% endblock %}

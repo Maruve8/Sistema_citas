@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Especialidad{% endblock %}
+
+{% block body %}
+    <h1>Especialidad</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ especialidad.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ especialidad.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Descripción</th>
+                <td>{{ especialidad.descripción }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_especialidad_index') }}">back to list</a>
+
+    <a href="{{ path('app_especialidad_edit', {'id': especialidad.id}) }}">edit</a>
+
+    {{ include('especialidad/_delete_form.html.twig') }}
+{% endblock %}

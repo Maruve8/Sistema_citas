@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cita index{% endblock %}
+
+{% block body %}
+    <h1>Cita index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>FechaHora</th>
+                <th>Estado</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for citum in citas %}
+            <tr>
+                <td>{{ citum.id }}</td>
+                <td>{{ citum.fechaHora ? citum.fechaHora|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ citum.estado }}</td>
+                <td>
+                    <a href="{{ path('app_cita_show', {'id': citum.id}) }}">show</a>
+                    <a href="{{ path('app_cita_edit', {'id': citum.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_cita_new') }}">Create new</a>
+{% endblock %}

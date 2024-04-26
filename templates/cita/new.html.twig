@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Cita{% endblock %}
+
+{% block body %}
+    <h1>Create new Cita</h1>
+
+    {{ include('cita/_form.html.twig') }}
+
+    <a href="{{ path('app_cita_index') }}">back to list</a>
+{% endblock %}

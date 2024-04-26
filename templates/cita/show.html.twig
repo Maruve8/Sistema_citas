@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cita{% endblock %}
+
+{% block body %}
+    <h1>Cita</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ citum.id }}</td>
+            </tr>
+            <tr>
+                <th>FechaHora</th>
+                <td>{{ citum.fechaHora ? citum.fechaHora|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td>{{ citum.estado }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_cita_index') }}">back to list</a>
+
+    <a href="{{ path('app_cita_edit', {'id': citum.id}) }}">edit</a>
+
+    {{ include('cita/_delete_form.html.twig') }}
+{% endblock %}
