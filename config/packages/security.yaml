@@ -25,6 +25,8 @@ security:
                 login_path: app_login
                 check_path: app_login
                 default_target_path: app_inicio  # Redirige aquí después del login, ajustar a la ruta deseada
+                username_parameter: email
+                password_parameter: password
 
             # Configuración de logout
             logout:

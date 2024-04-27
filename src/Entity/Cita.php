@@ -26,7 +26,7 @@ class Cita
 
     #[ORM\ManyToOne(inversedBy: 'citas')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Medico $médico = null;
+    private ?Medico $medico = null;
 
     public function getId(): ?int
     {
@@ -69,14 +69,14 @@ class Cita
         return $this;
     }
 
-    public function getMédico(): ?medico
+    public function getMedico(): ?medico
     {
-        return $this->médico;
+        return $this->medico;
     }
 
-    public function setMédico(?Medico $médico): static
+    public function setMedico(?Medico $medico): static
     {
-        $this->médico = $médico;
+        $this->medico = $medico;
 
         return $this;
     }

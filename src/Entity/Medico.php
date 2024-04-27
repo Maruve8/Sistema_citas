@@ -27,7 +27,7 @@ class Medico
     private ?Especialidad $especialidad = null;
 
     // Relación con Citas
-    #[ORM\OneToMany(targetEntity: Cita::class, mappedBy: 'médico', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Cita::class, mappedBy: 'medico', orphanRemoval: true)]
     private Collection $citas;
 
     public function __construct()
@@ -85,7 +85,7 @@ class Medico
     {
         if (!$this->citas->contains($cita)) {
             $this->citas->add($cita);
-            $cita->setMédico($this);
+            $cita->setMedico($this);
         }
 
         return $this;
@@ -95,8 +95,8 @@ class Medico
     {
         if ($this->citas->removeElement($cita)) {
             // Set the owning side to null (unless already changed)
-            if ($cita->getMédico() === $this) {
-                $cita->setMédico(null);
+            if ($cita->getMedico() === $this) {
+                $cita->setMedico(null);
             }
         }
 

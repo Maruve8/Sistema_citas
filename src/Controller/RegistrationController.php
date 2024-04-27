@@ -25,7 +25,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Codificar la contraseña utilizando UserPasswordHasherInterface
             $user->setPassword(
-                $passwordHasher->hashPassword($user, $form->get('password')->getData())
+                $passwordHasher->hashPassword($user, $form->get('password')->get('first')->getData())
             );
 
             // Guardar el nuevo usuario utilizando el entity manager inyectado
