@@ -1,0 +1,54 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Reservar Cita{% endblock %}
+
+{% block body %}
+    <h1>Reservar Cita</h1>
+
+    {{ form_start(citaonlineForm) }}
+        {{ form_row(citaonlineForm.especialidad) }}
+        {{ form_row(citaonlineForm.medico) }}
+
+        <button class="btn btn-primary">Continuar</button>
+    {{ form_end(citaonlineForm) }}
+    
+    <!--incluyo ajax para que no recargue la página al elegir el médico-->
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.especialidad-selector').change(function() {
+                var especialidadId = $(this).val();
+                $.ajax({
+                    url: '{{ path('app_cita_medico') }}',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        especialidad_id: especialidadId
+                    },
+                    success: function(data) {
+                        var $medicoSelect = $('#cita_online_medico');
+                        $medicoSelect.html('');
+                        if (data.medicos.length > 0) {
+                            $medicoSelect.append($('<option>', {
+                                value: '',
+                                text: 'Escoge un médico'
+                            }));
+                            $.each(data.medicos, function(key, medico) {
+                                $medicoSelect.append($('<option>', {
+                                    value: medico.id,
+                                    text: medico.nombre
+                                }));
+                            });
+                        } else {
+                            $medicoSelect.append($('<option>', {
+                                value: '',
+                                text: 'No hay médicos disponibles'
+                            }));
+                        }
+                    }
+                });
+            });
+        });
+    </script> 
+{% endblock %}

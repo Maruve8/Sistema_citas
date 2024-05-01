@@ -23,7 +23,7 @@ class CitaType extends AbstractType
                 'class' => usuario::class,
                 'choice_label' => 'id',
             ])
-            ->add('médico', EntityType::class, [
+            ->add('medico', EntityType::class, [
                 'class' => medico::class,
                 'choice_label' => 'id',
             ])

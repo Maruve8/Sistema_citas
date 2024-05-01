@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+
 #[Route('/medico')]
 class MedicoController extends AbstractController
 {
@@ -78,4 +79,8 @@ class MedicoController extends AbstractController
 
         return $this->redirectToRoute('app_medico_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    
+
+
 }

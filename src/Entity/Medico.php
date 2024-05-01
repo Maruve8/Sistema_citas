@@ -26,6 +26,11 @@ class Medico
     #[ORM\JoinColumn(nullable: false)]
     private ?Especialidad $especialidad = null;
 
+    
+    #[ORM\Column(length: 10)]
+    private ?string $turno = null;
+
+
     // Relación con Citas
     #[ORM\OneToMany(targetEntity: Cita::class, mappedBy: 'medico', orphanRemoval: true)]
     private Collection $citas;
@@ -74,6 +79,23 @@ class Medico
         $this->especialidad = $especialidad;
         return $this;
     }
+
+
+    public function getTurno(): ?string
+    {
+        return $this->turno;
+    }
+
+    public function setTurno(string $turno): self
+    {
+        if (!in_array($turno, ['manana', 'tarde'])) {
+            throw new \InvalidArgumentException("Turno inválido");
+        }
+        $this->turno = $turno;
+
+        return $this;
+    }
+
 
     // Métodos para gestionar las citas asociadas con el médico
     public function getCitas(): Collection
