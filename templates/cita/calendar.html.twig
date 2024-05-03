@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.css' rel='stylesheet' />
+{% endblock %}
+
+{% block title %}Calendario{% endblock %}
+
+{% block body %}
+<h1>Selecciona la Fecha y hora de tu Cita</h1>
+
+<div id='calendar'></div>
+
+{{ form_start(form) }}
+     {{ form_widget(form) }}
+     <button type="submit" class="btn btn-success">Confirmar cita</button>
+    
+{{ form_end(form) }}
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            dateClick: function(info) {
+                // Llama a la ruta del servidor para obtener las horas disponibles para la fecha seleccionada
+                $.ajax({
+                    url: '{{ path('ruta_para_horas_disponibles') }}', 
+                    type: 'GET', 
+                    data: { fecha: info.dateStr }, 
+                    success: function(response) {
+                        // añadir la lógica para mostrar las horas disponibles, modal
+                        
+                        $('#horaSeleccionada').html(response); 
+                        console.log('Horas disponibles cargadas con éxito');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error al obtener las horas disponibles: ' + error);
+                    }
+                });
+            }
+        });
+        calendar.render();
+    });
+</script>
+{% endblock %}

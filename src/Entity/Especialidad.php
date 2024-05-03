@@ -25,6 +25,9 @@ class Especialidad
     #[ORM\OneToMany(targetEntity: Medico::class, mappedBy: 'especialidad')]
     private Collection $medicos;
 
+    #[ORM\OneToMany(mappedBy: 'especialidad', targetEntity: Cita::class)]
+    private Collection $citas;
+
     public function __construct()
     {
         $this->medicos = new ArrayCollection();
@@ -78,6 +81,31 @@ class Especialidad
             // Set the owning side to null (unless already changed)
             if ($medico->getEspecialidad() === $this) {
                 $medico->setEspecialidad(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getCitas(): Collection
+    {
+        return $this->citas;
+    }
+
+    public function addCita(Cita $cita): self
+    {
+        if (!$this->citas->contains($cita)) {
+            $this->citas[] = $cita;
+            $cita->setEspecialidad($this);
+        }
+        return $this;
+    }
+
+    public function removeCita(Cita $cita): self
+    {
+        if ($this->citas->removeElement($cita)) {
+            // set the owning side to null (unless already changed)
+            if ($cita->getEspecialidad() === $this) {
+                $cita->setEspecialidad(null);
             }
         }
         return $this;

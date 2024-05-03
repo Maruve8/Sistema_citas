@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Form\CitaOnlineType; 
 use App\Repository\MedicoRepository;
+use App\Entity\Medico;
+use App\Entity\Especialidad;
+use App\Form\CitaFechaFormType;
 
 
 
@@ -27,28 +30,36 @@ class CitaController extends AbstractController
     }
 
     //método select para cita online, elegir especialidad y médico
-    #[Route('/citaonline', name: 'app_cita_online', methods: ['GET', 'POST'])]
+#[Route('/citaonline', name: 'app_cita_online', methods: ['GET', 'POST'])]
 public function select(Request $request, EntityManagerInterface $entityManager): Response
 {
-    $form = $this->createForm(CitaOnlineType::class);
+    
+    $form = $this->createForm(CitaOnlineType::class); 
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        // Aquí se puede almacenar la selección en la sesión o redirigir al siguiente paso para elegir la fecha.
-        $data = $form->getData();
-        $this->addFlash('success', 'Especialidad y médico seleccionados');
+        $especialidad = $form->get('especialidad')->getData(); // Obtenemos la especialidad seleccionada del formulario
+        $medico = $form->get('medico')->getData(); // Obtenemos el médico seleccionado del formulario
 
-        //app_cita_calendar pdt agregar la ruta con el calendario
-        return $this->redirectToRoute('app_cita_calendar', [
-            'especialidadId' => $data['especialidad']->getId(),
-            'medicoId' => $data['medico']->getId()
-        ]);
+        // Asegurarse de que tanto la especialidad como el médico no son nulos
+        if ($especialidad && $medico) {
+            return $this->redirectToRoute('app_cita_calendar', [
+                'especialidadId' => $especialidad->getId(),
+                'medicoId' => $medico->getId(),
+            ]);
+        } else {
+            $this->addFlash('error', 'Especialidad o médico no seleccionado correctamente.');
+        }
+    } else {
+        $this->addFlash('error', 'Hay errores en el formulario. Por favor, revíselo.');
     }
+
 
     return $this->render('cita/citaonline.html.twig', [
         'citaonlineForm' => $form->createView(),
     ]);
 }
+
 
  //manejar la solicitud ajax, devuelve médicos disponibles por especialidad seleccionada
  #[Route('/citamedico', name: 'app_cita_medico', methods: ['POST'])]
@@ -69,45 +80,57 @@ public function select(Request $request, EntityManagerInterface $entityManager):
  }
 
 
+ #[Route('/calendar/{especialidadId}/{medicoId}', name: 'app_cita_calendar')]
+ public function calendar(Request $request, EntityManagerInterface $entityManager, $especialidadId, $medicoId): Response
+{
+    $especialidad = $entityManager->getRepository(Especialidad::class)->find($especialidadId);
+    $medico = $entityManager->getRepository(Medico::class)->find($medicoId);
+
+    $cita = new Cita();
+    $cita->setEspecialidad($especialidad);
+    $cita->setMedico($medico);
+
+    // Formulario vacío para seelcción fecha y hora y manejo de estas
+    $form = $this->createForm(CitaFechaFormType::class, $cita);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Guardar la cita con fecha y hora
+        $entityManager->persist($cita);
+        $entityManager->flush();
+
+        // Redirigir a una página de confirmación 
+        return $this->redirectToRoute('app_cita_success');
+    }
+
+    // Se renderiza inicialmente sin fecha/hora seleccionada
+    return $this->render('cita/calendar.html.twig', [
+        'form' => $form->createView(),
+        'especialidad' => $especialidad,
+        'medico' => $medico
+    ]);
+}
+
+
+//manejar petición ajax que busca horas disponibles para fecha seleccionada
+#[Route('/horas-disponibles', name: 'ruta_para_horas_disponibles')]
+public function getAvailableHours(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $fecha = new \DateTime($request->query->get('fecha'));
+    // Consultar las horas disponibles para esa fecha
+    $horasDisponibles = $entityManager->getRepository(Cita::class)->findAvailableTimesByDate($fecha);
+
+    // Renderiza una vista con las horas
+    return $this->render('cita/horas_disponibles.html.twig', [
+        'horas' => $horasDisponibles
+    ]);
+}
+
+
+
 
     
-    #[Route('/{id}', name: 'app_cita_show', methods: ['GET'])]
-    public function show(Cita $citum): Response
-    {
-        return $this->render('cita/show.html.twig', [
-            'citum' => $citum,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_cita_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Cita $citum, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(CitaType::class, $citum);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_cita_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('cita/edit.html.twig', [
-            'citum' => $citum,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_cita_delete', methods: ['POST'])]
-    public function delete(Request $request, Cita $citum, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$citum->getId(), $request->getPayload()->get('_token'))) {
-            $entityManager->remove($citum);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_cita_index', [], Response::HTTP_SEE_OTHER);
-    }
-
+    
 
    
 

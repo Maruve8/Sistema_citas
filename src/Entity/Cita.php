@@ -28,6 +28,11 @@ class Cita
     #[ORM\JoinColumn(nullable: false)]
     private ?Medico $medico = null;
 
+    #[ORM\ManyToOne(inversedBy: 'citas')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Especialidad $especialidad = null;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -38,7 +43,7 @@ class Cita
         return $this->fechaHora;
     }
 
-    public function setFechaHora(\DateTimeInterface $fechaHora): static
+    public function setFechaHora(\DateTimeInterface $fechaHora): self
     {
         $this->fechaHora = $fechaHora;
 
@@ -50,7 +55,7 @@ class Cita
         return $this->estado;
     }
 
-    public function setEstado(string $estado): static
+    public function setEstado(string $estado): self
     {
         $this->estado = $estado;
 
@@ -62,7 +67,7 @@ class Cita
         return $this->paciente;
     }
 
-    public function setPaciente(?Usuario $paciente): static
+    public function setPaciente(?Usuario $paciente): self
     {
         $this->paciente = $paciente;
 
@@ -74,9 +79,21 @@ class Cita
         return $this->medico;
     }
 
-    public function setMedico(?Medico $medico): static
+    public function setMedico(?Medico $medico): self
     {
         $this->medico = $medico;
+
+        return $this;
+    }
+
+    public function getEspecialidad(): ?Especialidad
+    {
+        return $this->especialidad;
+    }
+
+    public function setEspecialidad(?Especialidad $especialidad): self
+    {
+        $this->especialidad = $especialidad;
 
         return $this;
     }
