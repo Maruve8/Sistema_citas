@@ -11,38 +11,80 @@
 <h1>Selecciona la Fecha y hora de tu Cita</h1>
 
 <div id='calendar'></div>
+<div id="availableTimes"></div>
 
-{{ form_start(form) }}
-     {{ form_widget(form) }}
-     <button type="submit" class="btn btn-success">Confirmar cita</button>
-    
-{{ form_end(form) }}
+{#utilizo marcadores de posición FDATE y HTIME que representan la ubicación de la URL donde deben insertarse fecha y hora seleccionadas 
+así evito mezclar twig y js, las variables manipuladas por js se manejan solo en ese entorno #}
+<script>
+    var confirmUrlTemplate = "{{ path('app_cita_confirmar', {
+        'especialidadId': especialidadId,
+        'medicoId': medicoId,
+        'fecha': 'FDATE',
+        'hora': 'HTIME'
+    }) }}";
+</script>
+
+
+<!-- Botón para confirmar la cita, inicialmente oculto -->
+<button id="confirmButton" class="btn btn-success" style="display:none;" onclick="confirmCita()">Confirmar cita</button>
 
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.js'></script>
 <script>
+
+     var selectedDate = null; //defino aquí la variable para asegurar esté disponible en eventos onclick
+
     document.addEventListener('DOMContentLoaded', function() {
+        var especialidadId = '{{ especialidad.id }}';
+        var medicoId = '{{ medico.id }}';
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             dateClick: function(info) {
-                // Llama a la ruta del servidor para obtener las horas disponibles para la fecha seleccionada
-                $.ajax({
-                    url: '{{ path('ruta_para_horas_disponibles') }}', 
-                    type: 'GET', 
-                    data: { fecha: info.dateStr }, 
-                    success: function(response) {
-                        // añadir la lógica para mostrar las horas disponibles, modal
-                        
-                        $('#horaSeleccionada').html(response); 
-                        console.log('Horas disponibles cargadas con éxito');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error al obtener las horas disponibles: ' + error);
-                    }
-                });
+                selectedDate = info.dateStr;  // actualiza la variable global selectdate
+               
+
+                fetch(`{{ path('ruta_para_horas_disponibles') }}?fecha=${info.dateStr}&especialidadId=${especialidadId}&medicoId=${medicoId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayAvailableTimes(data.horas);
+                    })
+                    .catch(error => console.error('Error al cargar las horas:', error));
             }
         });
         calendar.render();
     });
+
+    function displayAvailableTimes(horas) {
+        var timesContainer = document.getElementById('availableTimes');
+        timesContainer.innerHTML = ''; // Limpiar horas anteriores
+        if (horas && horas.length > 0) {
+            horas.forEach(function(hora) {
+                var timeButton = document.createElement('button');
+                timeButton.innerText = hora;
+                timeButton.className = 'btn btn-primary m-1';
+                timeButton.type = 'button';
+                timeButton.onclick = function() {
+                    //console.log("Hora antes de formar la URL:", hora);
+                    var url = confirmUrlTemplate.replace('FDATE', selectedDate).replace('HTIME', hora);
+                    window.location.href = url;
+                };
+                timesContainer.appendChild(timeButton);
+            });
+        } else {
+            timesContainer.innerHTML = '<p>No hay horas disponibles</p>';
+        }
+    }
+
+    function confirmCita() {
+        if (selectedDate) {
+            
+            alert('Fecha seleccionada: ' + selectedDate);
+            
+        } else {
+            alert('Por favor, selecciona una fecha y una hora.');
+        }
+    }
 </script>
 {% endblock %}
+
+

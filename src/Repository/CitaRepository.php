@@ -79,14 +79,16 @@ class CitaRepository extends ServiceEntityRepository
     $interval = new \DateInterval('PT15M'); // Intervalo de 15 minutos entre citas
     $period = new \DatePeriod($startDateTime, $interval, $endDateTime);
 
+    //comienzan los cálculos de horas disponibles:
+
     $availableTimes = [];
     foreach ($period as $dt) {
-        $availableTimes[] = $dt->format('Y-m-d H:i:s');
+        $availableTimes[] = $dt->format('H:i');
     }
 
     // Eliminar horas ocupadas
     $takenHours = array_map(function ($entry) {
-        return $entry['fechaHora']->format('Y-m-d H:i:s');
+        return $entry['fechaHora']->format('H:i');
     }, $takenTimes);
 
     $availableTimes = array_diff($availableTimes, $takenHours);

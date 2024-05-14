@@ -81,31 +81,22 @@ public function select(Request $request, EntityManagerInterface $entityManager):
 
 
  #[Route('/calendar/{especialidadId}/{medicoId}', name: 'app_cita_calendar')]
- public function calendar(Request $request, EntityManagerInterface $entityManager, $especialidadId, $medicoId): Response
+public function calendar(EntityManagerInterface $entityManager, int $especialidadId, int $medicoId): Response
 {
+    // Obtener entidades de la base de datos
     $especialidad = $entityManager->getRepository(Especialidad::class)->find($especialidadId);
     $medico = $entityManager->getRepository(Medico::class)->find($medicoId);
 
-    $cita = new Cita();
-    $cita->setEspecialidad($especialidad);
-    $cita->setMedico($medico);
-
-    // Formulario vacío para seelcción fecha y hora y manejo de estas
-    $form = $this->createForm(CitaFechaFormType::class, $cita);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        // Guardar la cita con fecha y hora
-        $entityManager->persist($cita);
-        $entityManager->flush();
-
-        // Redirigir a una página de confirmación 
-        return $this->redirectToRoute('app_cita_success');
+    // Comprobar si la especialidad y el médico existen
+    if (!$especialidad || !$medico) {
+        $this->addFlash('error', 'Especialidad o médico no válido.');
+        return $this->redirectToRoute('app_cita_online'); 
     }
 
-    // Se renderiza inicialmente sin fecha/hora seleccionada
+    // Pasar los datos necesarios para el calendario a la vista
     return $this->render('cita/calendar.html.twig', [
-        'form' => $form->createView(),
+        'especialidadId' => $especialidadId,
+        'medicoId' => $medicoId,
         'especialidad' => $especialidad,
         'medico' => $medico
     ]);
@@ -117,22 +108,51 @@ public function select(Request $request, EntityManagerInterface $entityManager):
 public function getAvailableHours(Request $request, EntityManagerInterface $entityManager): Response
 {
     $fecha = new \DateTime($request->query->get('fecha'));
+    $especialidadId = $request->query->get('especialidadId');
+    $medicoId = $request->query->get('medicoId');
     // Consultar las horas disponibles para esa fecha
-    $horasDisponibles = $entityManager->getRepository(Cita::class)->findAvailableTimesByDate($fecha);
+    $horasDisponibles = $entityManager->getRepository(Cita::class)->findAvailableTimesByDate($fecha, $medicoId, $especialidadId);
+    
 
     // Renderiza una vista con las horas
-    return $this->render('cita/horas_disponibles.html.twig', [
-        'horas' => $horasDisponibles
-    ]);
+    return $this->json(['horas' => $horasDisponibles]);
 }
 
 
+#[Route('/confirmar-cita/{especialidadId}/{medicoId}/{fecha}/{hora}', name: 'app_cita_confirmar')]
+public function confirmarCita(EntityManagerInterface $entityManager, $especialidadId, $medicoId, $fecha, $hora): Response
+{
+    try {
+        $fechaHora = new \DateTime("$fecha $hora");
+    } catch (\Exception $e) {
+        
+       throw new \Exception("Invalid date or time format: " . $e->getMessage());
+    }
 
+    $especialidad = $entityManager->getRepository(Especialidad::class)->find($especialidadId);
+    $medico = $entityManager->getRepository(Medico::class)->find($medicoId);
+
+    return $this->render('cita/confirmarCita.html.twig', [
+        'especialidad' => $especialidad,
+        'medico' => $medico,
+        'fechaHora' => $fechaHora,
+    ]);
+}
+
+#[Route('/cita/success/{especialidadId}/{medicoId}/{fechaHora}', name: 'app_cita_success')]
+public function citaSuccess(EntityManagerInterface $entityManager, int $especialidadId, int $medicoId, string $fechaHora): Response
+{
+    $especialidad = $entityManager->getRepository(Especialidad::class)->find($especialidadId);
+    $medico = $entityManager->getRepository(Medico::class)->find($medicoId);
+    $fechaHora = \DateTime::createFromFormat('Y-m-d H:i', $fechaHora);
+
+    return $this->render('cita/success_cita.html.twig', [
+        'especialidad' => $especialidad,
+        'medico' => $medico,
+        'fechaHora' => $fechaHora,
+    ]);
+}
 
     
-    
-
-   
-
 
 }
