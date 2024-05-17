@@ -23,6 +23,7 @@ class Cita
     public const ESTADO_CONFIRMADA = 'Confirmada';
     public const ESTADO_FINALIZADA = 'Finalizada';
     public const ESTADO_CANCELADA = 'Cancelada';
+    
 
 
 

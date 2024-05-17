@@ -32,6 +32,12 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $telefono = null;
 
+    #[ORM\Column(length: 9, nullable: true)]
+    private ?string $dni = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $direccion = null;
+
     /**
      * @var Collection<int, Cita>
      */
@@ -122,6 +128,28 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return $this->email;  
+    }
+
+    public function getDni(): ?string
+    {
+        return $this->dni;
+    }
+
+    public function setDni(?string $dni): self
+    {
+        $this->dni = $dni;
+        return $this;
+    }
+
+    public function getDireccion(): ?string
+    {
+        return $this->direccion;
+    }
+
+    public function setDireccion(?string $direccion): self
+    {
+        $this->direccion = $direccion;
+        return $this;
     }
 
 

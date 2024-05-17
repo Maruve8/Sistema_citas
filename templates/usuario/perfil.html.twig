@@ -1,0 +1,40 @@
+{# templates/usuario/perfil.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Perfil{% endblock %}
+
+{% block body %}
+<h1>Hola, {{ usuario.nombre }}</h1>
+
+{{ form_start(form) }}
+    <div>
+        {{ form_label(form.nombre) }}
+        {{ form_widget(form.nombre) }}
+    </div>
+    <div>
+        {{ form_label(form.apellidos) }}
+        {{ form_widget(form.apellidos) }}
+    </div>
+    <div>
+        {{ form_label(form.dni) }}
+        {{ form_widget(form.dni) }}
+    </div>
+    <div>
+        {{ form_label(form.direccion) }}
+        {{ form_widget(form.direccion) }}
+    </div>
+    <div>
+        {{ form_label(form.email) }}
+        {{ form_widget(form.email) }}
+    </div>
+    <div>
+        {{ form_label(form.password) }}
+        {{ form_widget(form.password) }}
+    </div>
+    <div>
+        {{ form_label(form.telefono) }}
+        {{ form_widget(form.telefono) }}
+    </div>
+    <button class="btn btn-primary">Guardar</button>
+{{ form_end(form) }}
+{% endblock %}

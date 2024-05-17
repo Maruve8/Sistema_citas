@@ -23,6 +23,32 @@ class UsuarioController extends AbstractController
     }
 
 
+    #[Route('/perfil', name: 'app_usuario_perfil', methods: ['GET', 'POST'])]
+    public function perfil(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $usuario = $this->getUser();
+        
+        if (!$usuario) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $form = $this->createForm(UsuarioType::class, $usuario);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Perfil actualizado correctamente.');
+
+            return $this->redirectToRoute('app_usuario_perfil');
+        }
+
+        return $this->render('usuario/perfil.html.twig', [
+            'usuario' => $usuario,
+            'form' => $form->createView(),
+        ]);
+    }
+
+
     //utilizar en caso de rol administrador para incluir nuevos usuarios de manera interna
     #[Route('/new', name: 'app_usuario_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

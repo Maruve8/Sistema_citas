@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formulario de Contacto{% endblock %}
+
+{% block body %}
+<h1>FORMULARIO DE CONTACTO</h1>
+
+{{ form_start(form) }}
+    <div>
+        {{ form_label(form.nombre) }}
+        {{ form_widget(form.nombre) }}
+    </div>
+    <div>
+        {{ form_label(form.email) }}
+        {{ form_widget(form.email) }}
+    </div>
+    <div>
+        {{ form_label(form.telefono) }}
+        {{ form_widget(form.telefono) }}
+    </div>
+    <div>
+        {{ form_label(form.mensaje) }}
+        {{ form_widget(form.mensaje) }}
+    </div>
+    <button class="btn btn-primary">Enviar</button>
+{{ form_end(form) }}
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
+{% endblock %}
