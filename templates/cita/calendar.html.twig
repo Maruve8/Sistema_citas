@@ -16,12 +16,16 @@
 {#utilizo marcadores de posición FDATE y HTIME que representan la ubicación de la URL donde deben insertarse fecha y hora seleccionadas 
 así evito mezclar twig y js, las variables manipuladas por js se manejan solo en ese entorno #}
 <script>
+    var confirmUrlTemplate = "";
+    {% if usuario is defined and usuario is not null %}
     var confirmUrlTemplate = "{{ path('app_cita_confirmar', {
         'especialidadId': especialidadId,
         'medicoId': medicoId,
+        'usuarioId': usuario.id,
         'fecha': 'FDATE',
         'hora': 'HTIME'
     }) }}";
+    {% endif %}
 </script>
 
 
@@ -34,46 +38,54 @@ así evito mezclar twig y js, las variables manipuladas por js se manejan solo e
      var selectedDate = null; //defino aquí la variable para asegurar esté disponible en eventos onclick
 
     document.addEventListener('DOMContentLoaded', function() {
-        var especialidadId = '{{ especialidad.id }}';
-        var medicoId = '{{ medico.id }}';
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            dateClick: function(info) {
-                selectedDate = info.dateStr;  // actualiza la variable global selectdate
-               
+    var especialidadId = '{{ especialidad.id }}';
+    var medicoId = '{{ medico.id }}';
+    var usuarioId = '{{ usuario.id }}'
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        validRange: {
+            start: new Date().toISOString().split('T')[0] // Restringe las fechas anteriores a hoy
+        },
+        dateClick: function(info) {
+            selectedDate = info.dateStr;  // actualiza la variable global selectdate
 
-                fetch(`{{ path('ruta_para_horas_disponibles') }}?fecha=${info.dateStr}&especialidadId=${especialidadId}&medicoId=${medicoId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        displayAvailableTimes(data.horas);
-                    })
-                    .catch(error => console.error('Error al cargar las horas:', error));
-            }
-        });
-        calendar.render();
+            // Añado un log para verificar la URL de la petición fetch
+            console.log(`{{ path('ruta_para_horas_disponibles') }}?fecha=${info.dateStr}&especialidadId=${especialidadId}&medicoId=${medicoId}`);
+
+            fetch(`{{ path('ruta_para_horas_disponibles') }}?fecha=${info.dateStr}&especialidadId=${especialidadId}&medicoId=${medicoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Datos recibidos:', data);
+                    displayAvailableTimes(data.horas);
+                })
+                .catch(error => console.error('Error al cargar las horas:', error));
+        }
     });
+    calendar.render();
+});
+
 
     function displayAvailableTimes(horas) {
-        var timesContainer = document.getElementById('availableTimes');
-        timesContainer.innerHTML = ''; // Limpiar horas anteriores
-        if (horas && horas.length > 0) {
-            horas.forEach(function(hora) {
-                var timeButton = document.createElement('button');
-                timeButton.innerText = hora;
-                timeButton.className = 'btn btn-primary m-1';
-                timeButton.type = 'button';
-                timeButton.onclick = function() {
-                    //console.log("Hora antes de formar la URL:", hora);
-                    var url = confirmUrlTemplate.replace('FDATE', selectedDate).replace('HTIME', hora);
-                    window.location.href = url;
-                };
-                timesContainer.appendChild(timeButton);
-            });
-        } else {
-            timesContainer.innerHTML = '<p>No hay horas disponibles</p>';
-        }
+    var timesContainer = document.getElementById('availableTimes');
+    timesContainer.innerHTML = ''; // Limpiar horas anteriores
+
+    if (horas && horas.length > 0) {
+        horas.forEach(function(hora) {
+            var timeButton = document.createElement('button');
+            timeButton.innerText = hora;
+            timeButton.className = 'btn btn-primary m-1';
+            timeButton.type = 'button';
+            timeButton.onclick = function() {
+                var url = confirmUrlTemplate.replace('FDATE', selectedDate).replace('HTIME', hora);
+                window.location.href = url;
+            };
+            timesContainer.appendChild(timeButton);
+        });
+    } else {
+        timesContainer.innerHTML = '<p>No hay horas disponibles</p>';
     }
+}
 
     function confirmCita() {
         if (selectedDate) {
@@ -86,5 +98,6 @@ así evito mezclar twig y js, las variables manipuladas por js se manejan solo e
     }
 </script>
 {% endblock %}
+
 
 

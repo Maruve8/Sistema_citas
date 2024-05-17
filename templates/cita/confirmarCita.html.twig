@@ -12,7 +12,16 @@
     <p><strong>Médico:</strong> {{ medico.nombre }} {{ medico.apellidos }}</p>
     <p><strong>Fecha y hora:</strong> {{ fechaHora|date('d/m/Y H:i') }}</p>
     
-    <a href="{{ path('app_cita_success', {'especialidadId': especialidad.id, 'medicoId': medico.id, 'fechaHora': fechaHora.format('Y-m-d H:i')}) }}" class="btn btn-success">Confirmar</a>
+    <form action="{{ path('app_cita_guardar') }}" method="POST">
+        <input type="hidden" name="especialidadId" value="{{ especialidad.id }}">
+        <input type="hidden" name="medicoId" value="{{ medico.id }}">
+        <input type="hidden" name="usuarioId" value="{{ app.user.id }}">
+        <input type="hidden" name="fecha" value="{{ fechaHora|date('Y-m-d') }}">
+        <input type="hidden" name="hora" value="{{ fechaHora|date('H:i:s') }}">
+        <button type="submit" class="btn btn-success">Confirmar</button>
+    </form>
+    
     <a href="{{ path('app_cita_calendar', {'especialidadId': especialidad.id, 'medicoId': medico.id}) }}" class="btn btn-danger">Volver</a>
 </div>
 {% endblock %}
+

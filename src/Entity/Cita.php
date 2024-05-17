@@ -20,6 +20,12 @@ class Cita
     #[ORM\Column(length: 255)]
     private ?string $estado = null;
 
+    public const ESTADO_CONFIRMADA = 'Confirmada';
+    public const ESTADO_FINALIZADA = 'Finalizada';
+    public const ESTADO_CANCELADA = 'Cancelada';
+
+
+
     #[ORM\ManyToOne(inversedBy: 'citas')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Usuario $paciente = null;
