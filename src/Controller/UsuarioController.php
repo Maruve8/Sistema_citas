@@ -22,7 +22,7 @@ class UsuarioController extends AbstractController
         ]);
     }
 
-
+    //perfil usuario
     #[Route('/perfil', name: 'app_usuario_perfil', methods: ['GET', 'POST'])]
     public function perfil(Request $request, EntityManagerInterface $entityManager): Response
     {

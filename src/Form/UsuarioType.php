@@ -19,7 +19,6 @@ class UsuarioType extends AbstractType
         ->add('dni', TextType::class, ['label' => 'DNI', 'required' => false])
         ->add('direccion', TextType::class, ['label' => 'Dirección', 'required' => false])
         ->add('email', TextType::class, ['label' => 'Email'])
-        ->add('password', PasswordType::class, ['label' => 'Contraseña'])
         ->add('telefono', TextType::class, ['label' => 'Teléfono', 'required' => false])
         ;
     }

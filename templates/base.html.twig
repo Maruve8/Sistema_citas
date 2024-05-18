@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
             {{ encore_entry_link_tags('app') }}
+            <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         {% endblock %}
 
         {% block javascripts %}
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
             {{ encore_entry_script_tags('app') }}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
@@ -32,20 +36,25 @@
 -	                </li>
 
                 <li class="nav-item">
-                    <a >Gestiona</a>
+                    <a class="nav-link" href="{{ path('app_gestiona_citas') }}">Gestiona</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_contacto') }}">Contacta</a>
                 </li>
                     <li class="nav-item">
-                        <a >Salir</a>
+                        <a class="nav-link" href="{{ path('app_logout') }}">Salir</a>
                     </li>
-                {% endif %}
+               
             </ul>
         </div>
     </div>
 </nav>
+ {% endif %}
 
+ <div class="container mt-4">
         {% block body %}{% endblock %}
+ </div>
+
+ 
     </body>
 </html>
