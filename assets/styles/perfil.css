@@ -1,0 +1,55 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+body {
+    background-color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+.perfil-container {
+    max-width: 600px;
+    margin:auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+h1 {
+    color: #0046ad;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-control {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius:  5px;
+}
+
+
+.btn-primary {
+    background-color: #0046ad;
+    border-color: #0046ad;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    width: 100%;
+
+}
+
+
+.btn-primary:hover {
+    background-color: #003b8e;
+    border-color: #003b8e;
+}

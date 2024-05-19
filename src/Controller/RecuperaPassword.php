@@ -31,13 +31,13 @@ class RecuperaPassword extends AbstractController
             if ($usuario) {
                 $token = $tokenGenerator->generateToken();
                 $usuario->setResetToken($token);
-                $usuario->setResetTokenExpiresAt(new \DateTime('+1 hour')); // Establece la expiración del token
+                $usuario->setResetTokenExpiresAt(new \DateTime('+1 hour')); // expiración del token
                 $entityManager->flush();
 
                 $resetUrl = $this->generateUrl('resetear_password', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
                 // Enviar email con el enlace para restablecer la contraseña
                 $emailMessage = (new Email())
-                    ->from('noreply@yourdomain.com')
+                    ->from('mv.contrerasbellido@gmail.com')
                     ->to($usuario->getEmail())
                     ->subject('Recuperar contraseña')
                     ->html($this->renderView('email/reset_password_email.html.twig', ['resetUrl' => $resetUrl]));

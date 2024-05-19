@@ -1,36 +1,46 @@
-{# templates/usuario/perfil.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Perfil{% endblock %}
 
-{% block body %}
-<h1>Hola, {{ usuario.nombre }}</h1>
 
-{{ form_start(form) }}
-    <div>
-        {{ form_label(form.nombre) }}
-        {{ form_widget(form.nombre) }}
-    </div>
-    <div>
-        {{ form_label(form.apellidos) }}
-        {{ form_widget(form.apellidos) }}
-    </div>
-    <div>
-        {{ form_label(form.dni) }}
-        {{ form_widget(form.dni) }}
-    </div>
-    <div>
-        {{ form_label(form.direccion) }}
-        {{ form_widget(form.direccion) }}
-    </div>
-    <div>
-        {{ form_label(form.email) }}
-        {{ form_widget(form.email) }}
-    </div>
-    <div>
-        {{ form_label(form.telefono) }}
-        {{ form_widget(form.telefono) }}
-    </div>
-    <button class="btn btn-primary">Guardar</button>
-{{ form_end(form) }}
+{% block stylesheets %}
+{{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/perfil.css') }}">
 {% endblock %}
+
+
+{% block body %}
+
+<div class="container perfil-container mt-5">
+    <h1>Hola, {{ usuario.nombre }}</h1>
+    {{ form_start(form) }}
+        <div class="form-group">
+            {{ form_label(form.nombre, 'Nombre:') }}
+            {{ form_widget(form.nombre, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.apellidos, 'Apellidos:') }}
+            {{ form_widget(form.apellidos, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.dni, 'DNI:') }}
+            {{ form_widget(form.dni, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.direccion, 'Dirección:') }}
+            {{ form_widget(form.direccion, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.email, 'Email:') }}
+            {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.telefono, 'Teléfono:') }}
+            {{ form_widget(form.telefono, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    {{ form_end(form) }}
+</div>
+
+{% endblock %}
+
