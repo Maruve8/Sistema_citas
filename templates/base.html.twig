@@ -20,31 +20,31 @@
     </head>
     <body>
     {% if app.user%}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ path('app_inicio') }}">Inicio</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_usuario_perfil') }}">Mi perfil</a>
+                    <a class="nav-link {% if app.request.get('_route') == 'app_usuario_perfil' %}active{% endif %}" href="{{ path('app_usuario_perfil') }}">Mi perfil</a>
                 </li>
                 <li class="nav-item">
--	                    <a class="nav-link" href="{{ path('app_cita_online') }}">Cita Online</a>
--	                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_gestiona_citas') }}">Gestiona</a>
+                    <a class="nav-link {% if app.request.get('_route') == 'app_cita_online' %}active{% endif %}" href="{{ path('app_cita_online') }}">Cita Online</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_contacto') }}">Contacta</a>
+                    <a class="nav-link {% if app.request.get('_route') == 'app_gestiona_citas' %}active{% endif %}" href="{{ path('app_gestiona_citas') }}">Gestiona</a>
                 </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_logout') }}">Salir</a>
-                    </li>
-               
+                <li class="nav-item">
+                    <a class="nav-link {% if app.request.get('_route') == 'app_contacto' %}active{% endif %}" href="{{ path('app_contacto') }}">Contacta</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link {% if app.request.get('_route') == 'app_logout' %}active{% endif %}" href="{{ path('app_logout') }}">Salir</a>
+                </li>
             </ul>
         </div>
     </div>

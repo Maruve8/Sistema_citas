@@ -2,9 +2,95 @@
 
 
 body {
-    background-color: whitesmoke;
+    background-color: #ffffff;
+    font-family: Arial, sans-serif;
 }
 
-.container {
-    max-width: 960px;
+
+
+
+.navbar {
+    background-color: #0046ad !important;
+    padding: 10px 20px;
 }
+
+.navbar .navbar-brand {
+    color: #fff !important;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.navbar .nav-link {
+    color: #0046ad !important;
+    background-color: #ffffff;
+    border-radius: 5px;
+    margin-right: 15px;
+    padding: 5px 10px;
+}
+
+.navbar .nav-link:hover {
+    color: #ffffff !important;
+    background-color: #003b8e !important;
+}
+
+.navbar .nav-link.active {
+    color: #ffffff !important;
+    background-color: #003b8e !important;
+}
+
+
+
+
+
+form {
+    max-width: 500px;
+    margin: auto;
+}
+
+form .form-group label {
+    font-weight: bold;
+}
+
+
+.profile-container {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.card .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+
+.nav-tabs .nav-link {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 0;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #0046ad;
+    color: #fff;
+}
+
+
+.table th,
+.table td {
+    text-align: center;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+

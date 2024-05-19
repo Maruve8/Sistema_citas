@@ -1,0 +1,34 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+.btn-primary {
+    background-color: #0046ad;
+    border-color: #0046ad;
+    color: #fff;
+    padding: 30px 20px;
+    font-size: 1.5rem;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: #003b8e;
+    border-color: #003b8e;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+p {
+    margin-bottom: 30px;
+}
+
+.action-button {
+    margin-bottom: 30px;
+}
+
+.help-link {
+    display: block;
+    text-align: right;
+    margin-top: 20px;
+}

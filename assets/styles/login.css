@@ -1,0 +1,75 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+body {
+    background-color: #ffffff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+
+    margin: 0;
+
+}
+
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+    text-align: center;
+    margin-bottom: 20vh;
+
+}
+
+
+.form-signin .form-control {
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.form-signin .btn-primary {
+    background-color: #0046ad;
+    border-color: #0046ad;
+    color: #fff;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.form-signin .btn-primary:hover {
+    background-color: #003b8e;
+    border-color: #003b8e;
+}
+
+.form-signin h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+
+}
+
+.form-signin .checkbox {
+    font-weight: 400;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+
+.form-signin .checkbox label {
+    font-weight: normal;
+
+}
+
+
+
+.form-signin a {
+    color: #0046ad;
+    text-decoration: none;
+}
+
+.form-signin a:hover {
+    text-decoration: underline;
+}
