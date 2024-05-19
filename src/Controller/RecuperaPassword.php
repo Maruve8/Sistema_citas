@@ -14,91 +14,83 @@ use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Form\PasswordResetType;
-
-
+use Symfony\Component\Mime\Email;
 
 class RecuperaPassword extends AbstractController
 {
     #[Route('/recuperarpassword', name: 'recuperar_password', methods: ['GET', 'POST'])]
     public function request(Request $request, MailerInterface $mailer, TokenGeneratorInterface $tokenGenerator, EntityManagerInterface $entityManager): Response
-{
-    $form = $this->createForm(PasswordResetRequestFormType::class);
-    $form->handleRequest($request);
+    {
+        $form = $this->createForm(PasswordResetRequestFormType::class);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $email = $form->get('email')->getData();
-        $usuario = $entityManager->getRepository(Usuario::class)->findOneBy(['email' => $email]);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $email = $form->get('email')->getData();
+            $usuario = $entityManager->getRepository(Usuario::class)->findOneBy(['email' => $email]);
 
-        if ($usuario) {
-            $token = $tokenGenerator->generateToken();
-            $usuario->setResetToken($token);
+            if ($usuario) {
+                $token = $tokenGenerator->generateToken();
+                $usuario->setResetToken($token);
+                $usuario->setResetTokenExpiresAt(new \DateTime('+1 hour')); // Establece la expiración del token
+                $entityManager->flush();
+
+                $resetUrl = $this->generateUrl('resetear_password', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
+                // Enviar email con el enlace para restablecer la contraseña
+                $emailMessage = (new Email())
+                    ->from('noreply@yourdomain.com')
+                    ->to($usuario->getEmail())
+                    ->subject('Recuperar contraseña')
+                    ->html($this->renderView('email/reset_password_email.html.twig', ['resetUrl' => $resetUrl]));
+
+                $mailer->send($emailMessage);
+
+                $this->addFlash('success', 'Se ha enviado un email para restablecer tu contraseña.');
+                return $this->redirectToRoute('app_login');
+            }
+
+            $this->addFlash('error', 'No se ha encontrado ninguna cuenta para este correo electrónico.');
+        }
+
+        return $this->render('security/forgot_password.html.twig', [
+            'requestForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/resetearpassword/{token}', name: 'resetear_password', methods: ['GET', 'POST'])]
+    public function reset(Request $request, string $token, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
+    {   
+        $usuario = $entityManager->getRepository(Usuario::class)->findOneBy(['resetToken' => $token]);
+
+        if (!$usuario) {
+            $this->addFlash('error', 'Token inválido');
+            return $this->redirectToRoute('recuperar_password');
+        }
+
+        // Verificar si el token ha expirado
+        if ($usuario->getResetTokenExpiresAt() < new \DateTime()) {
+            $this->addFlash('error', 'El token ha expirado');
+            return $this->redirectToRoute('recuperar_password');
+        }
+
+        $form = $this->createForm(PasswordResetType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $newPassword = $form->get('newPassword')->getData();
+            $usuario->setPassword($passwordHasher->hashPassword($usuario, $newPassword));
+            $usuario->setResetToken(null);
+            $usuario->setResetTokenExpiresAt(null);
             $entityManager->flush();
 
-            $resetUrl = $this->generateUrl('resetear_password', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
-           
-                return $this->redirectToRoute('resetear_password', ['token' => $token]);
-            
-        }
-
-        $this->addFlash('error', 'No se ha encontrado ninguna cuenta para este correo electrónico.');
-    }
-
-    return $this->render('security/forgot_password.html.twig', [
-        'requestForm' => $form->createView(),
-    ]);
-}
-
-    
-    
-
-
-
-
-#[Route('/resetearpassword/{token}', name: 'resetear_password', methods: ['GET', 'POST'])]
-public function reset(Request $request, string $token, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
-{   
-    // Obtener el usuario por el token
-    $usuario = $entityManager->getRepository(Usuario::class)->findOneBy(['resetToken' => $token]);
-    $form = $this->createForm(PasswordResetType::class);
-    $form->handleRequest($request);
-
-    // Comprobar si el usuario existe
-    if (!$usuario) {
-        $this->addFlash('error', 'Token inválido');
-        return $this->render('security/reset_password.html.twig', [
-            'resetForm' => $form->createView(),
-            'token' => $token
-        ]);
-
-    }
-    
-    if ($form->isSubmitted() && $form->isValid()) {
-        $newPassword = $form->get('newPassword')->getData(); // Directamente obteniendo el dato como string
-        if (!empty($newPassword)) {  // Verifica directamente si la contraseña no está vacía
-            $usuario->setPassword($passwordHasher->hashPassword($usuario, $newPassword));
-            $usuario->setResetToken(null);  // Importante eliminar el token una vez usado
-            $entityManager->flush();  // Confirmar cambios en la base de datos
-    
             $this->addFlash('success', 'Su contraseña se ha restablecido correctamente.');
             return $this->redirectToRoute('app_login');
-        } else {
-            $this->addFlash('error', 'La nueva contraseña no puede estar vacía.');
         }
-    } else {
-        // Capturar y mostrar errores de validación
-        foreach ($form->getErrors(true) as $error) {
-            $this->addFlash('error', $error->getMessage());
-        }
+
+        return $this->render('security/reset_password.html.twig', [
+            'resetForm' => $form->createView(),
+            'token' => $token,
+        ]);
     }
-    
-
-    return $this->render('security/reset_password.html.twig', [
-        'resetForm' => $form->createView(),
-        'token' => $token,
-    ]);
-
-
 }
 
-}
     
