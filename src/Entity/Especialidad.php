@@ -21,7 +21,7 @@ class Especialidad
     #[ORM\Column(length: 255)]
     private ?string $descripción = null;
 
-    // Añadimos la colección de médicos asociados a esta especialidad
+    
     #[ORM\OneToMany(targetEntity: Medico::class, mappedBy: 'especialidad')]
     private Collection $medicos;
 
@@ -60,7 +60,7 @@ class Especialidad
         return $this;
     }
 
-    // Métodos para acceder y modificar la colección de médicos
+    
     public function getMedicos(): Collection
     {
         return $this->medicos;
@@ -78,7 +78,7 @@ class Especialidad
     public function removeMedico(Medico $medico): self
     {
         if ($this->medicos->removeElement($medico)) {
-            // Set the owning side to null (unless already changed)
+            
             if ($medico->getEspecialidad() === $this) {
                 $medico->setEspecialidad(null);
             }
@@ -103,7 +103,7 @@ class Especialidad
     public function removeCita(Cita $cita): self
     {
         if ($this->citas->removeElement($cita)) {
-            // set the owning side to null (unless already changed)
+            
             if ($cita->getEspecialidad() === $this) {
                 $cita->setEspecialidad(null);
             }

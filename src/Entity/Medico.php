@@ -97,7 +97,7 @@ class Medico
     }
 
 
-    // Métodos para gestionar las citas asociadas con el médico
+    
     public function getCitas(): Collection
     {
         return $this->citas;
@@ -116,7 +116,7 @@ class Medico
     public function removeCita(Cita $cita): self
     {
         if ($this->citas->removeElement($cita)) {
-            // Set the owning side to null (unless already changed)
+            
             if ($cita->getMedico() === $this) {
                 $cita->setMedico(null);
             }

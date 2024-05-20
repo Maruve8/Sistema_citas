@@ -206,7 +206,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeCita(Cita $cita): self
     {
         if ($this->citas->removeElement($cita)) {
-            // set the owning side to null (unless already changed)
+            
             if ($cita->getPaciente() === $this) {
                 $cita->setPaciente(null);
             }
