@@ -2,106 +2,156 @@
 
 {% block title %}Gestión de Citas{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="{{ asset('styles/gestiona.css') }}">
+{% endblock %}
+
 {% block body %}
-<div class="container mt-5">
-    <h1>Gestión de Citas</h1>
-    <ul class="nav nav-tabs" id="citasTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="citas-pendientes-tab" data-toggle="tab" href="#citas-pendientes" role="tab" aria-controls="citas-pendientes" aria-selected="true">Citas Pendientes</a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" id="historico-citas-tab" data-toggle="tab" href="#historico-citas" role="tab" aria-controls="historico-citas" aria-selected="false">Histórico de Citas</a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" id="citas-anuladas-tab" data-toggle="tab" href="#citas-anuladas" role="tab" aria-controls="citas-anuladas" aria-selected="false">Citas Anuladas</a>
-        </li>
-    </ul>
-    <div class="tab-content" id="citasTabsContent">
-        <div class="tab-pane fade show active" id="citas-pendientes" role="tabpanel" aria-labelledby="citas-pendientes-tab">
-            <!-- Contenido de Citas Pendientes -->
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Especialidad</th>
-                        <th>Médico</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cita in citasPendientes %}
+<div class="content-wrapper">
+    <div class="table-container">
+        <ul class="nav nav-tabs" id="citasTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="citas-pendientes-tab" data-toggle="tab" href="#citas-pendientes" role="tab" aria-controls="citas-pendientes" aria-selected="true">Citas Pendientes</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="historico-citas-tab" data-toggle="tab" href="#historico-citas" role="tab" aria-controls="historico-citas" aria-selected="false">Histórico de Citas</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="citas-anuladas-tab" data-toggle="tab" href="#citas-anuladas" role="tab" aria-controls="citas-anuladas" aria-selected="false">Citas Anuladas</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="citasTabsContent">
+            <div class="tab-pane fade show active" id="citas-pendientes" role="tabpanel" aria-labelledby="citas-pendientes-tab">
+                <table id="citasPendientesTable" class="table table-striped">
+                    <thead>
                         <tr>
-                            <td>{{ cita.especialidad.nombre }}</td>
-                            <td>{{ cita.medico.nombre }}</td>
-                            <td>{{ cita.fechaHora|date('Y-m-d') }}</td>
-                            <td>{{ cita.fechaHora|date('H:i') }}</td>
-                            <td>
-                                <a href="{{ path('app_cancelar_cita', {'id': cita.id}) }}" class="btn btn-danger btn-sm">Cancelar</a>
-                            </td>
+                            <th>Especialidad</th>
+                            <th>Médico</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Acciones</th>
                         </tr>
-                    {% else %}
+                    </thead>
+                    <tbody>
+                        {% for cita in citasPendientes %}
+                            <tr>
+                                <td>{{ cita.especialidad.nombre }}</td>
+                                <td>{{ cita.medico.nombre }}</td>
+                                <td>{{ cita.fechaHora|date('Y-m-d') }}</td>
+                                <td>{{ cita.fechaHora|date('H:i') }}</td>
+                                <td>
+                                    <a href="{{ path('app_cancelar_cita', {'id': cita.id}) }}" class="btn btn-danger btn-sm">Cancelar</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5">No tienes citas pendientes.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="historico-citas" role="tabpanel" aria-labelledby="historico-citas-tab">
+                <table id="historicoCitasTable" class="table table-striped">
+                    <thead>
                         <tr>
-                            <td colspan="5">No tienes citas pendientes.</td>
+                            <th>Especialidad</th>
+                            <th>Médico</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="tab-pane fade" id="historico-citas" role="tabpanel" aria-labelledby="historico-citas-tab">
-            <!-- Contenido de Histórico de Citas -->
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Especialidad</th>
-                        <th>Médico</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cita in historicoCitas %}
+                    </thead>
+                    <tbody>
+                        {% for cita in historicoCitas %}
+                            <tr>
+                                <td>{{ cita.especialidad.nombre }}</td>
+                                <td>{{ cita.medico.nombre }}</td>
+                                <td>{{ cita.fechaHora|date('Y-m-d') }}</td>
+                                <td>{{ cita.fechaHora|date('H:i') }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4">No tienes citas finalizadas.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="citas-anuladas" role="tabpanel" aria-labelledby="citas-anuladas-tab">
+                <table id="citasAnuladasTable" class="table table-striped">
+                    <thead>
                         <tr>
-                            <td>{{ cita.especialidad.nombre }}</td>
-                            <td>{{ cita.medico.nombre }}</td>
-                            <td>{{ cita.fechaHora|date('Y-m-d') }}</td>
-                            <td>{{ cita.fechaHora|date('H:i') }}</td>
+                            <th>Especialidad</th>
+                            <th>Médico</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
                         </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="4">No tienes citas finalizadas.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="tab-pane fade" id="citas-anuladas" role="tabpanel" aria-labelledby="citas-anuladas-tab">
-            <!-- Contenido de Citas Anuladas -->
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Especialidad</th>
-                        <th>Médico</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cita in citasAnuladas %}
-                        <tr>
-                            <td>{{ cita.especialidad.nombre }}</td>
-                            <td>{{ cita.medico.nombre }}</td>
-                            <td>{{ cita.fechaHora|date('Y-m-d') }}</td>
-                            <td>{{ cita.fechaHora|date('H:i') }}</td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="4">No tienes citas anuladas.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for cita in citasAnuladas %}
+                            <tr>
+                                <td>{{ cita.especialidad.nombre }}</td>
+                                <td>{{ cita.medico.nombre }}</td>
+                                <td>{{ cita.fechaHora|date('Y-m-d') }}</td>
+                                <td>{{ cita.fechaHora|date('H:i') }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4">No tienes citas anuladas.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var citasPendientesTable = $('#citasPendientesTable').DataTable({
+                "pageLength": 10,
+                "language": {
+                    "url": "{{ asset('js/Spanish.json') }}"
+                }
+            });
+            var historicoCitasTable = $('#historicoCitasTable').DataTable({
+                "pageLength": 10,
+                "language": {
+                    "url": "{{ asset('js/Spanish.json') }}"
+                }
+            });
+            var citasAnuladasTable = $('#citasAnuladasTable').DataTable({
+                "pageLength": 10,
+                "language": {
+                    "url": "{{ asset('js/Spanish.json') }}"
+                }
+            });
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+                var target = $(e.target).attr("href");
+                if (target === "#historico-citas") {
+                    historicoCitasTable.columns.adjust().draw();
+                } else if (target === "#citas-anuladas") {
+                    citasAnuladasTable.columns.adjust().draw();
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+
+
+
+
+
+
+
+

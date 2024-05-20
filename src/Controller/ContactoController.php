@@ -25,7 +25,7 @@ class ContactoController extends AbstractController
             // Enviar el correo electrónico
             $email = (new Email())
                 ->from($datos['email'])
-                ->to('mv.contrerasbellido@gmail.com') 
+                ->to('citas.medicas.contacto@gmail.com') 
                 ->subject('Formulario de Contacto')
                 ->text(sprintf(
                     "Nombre: %s\nEmail: %s\nTeléfono: %s\n\nMensaje:\n%s",
