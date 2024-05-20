@@ -1,0 +1,74 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+    
+}
+
+.content-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 600px;
+    margin-top: 20px; 
+}
+
+.success-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: #0046ad;
+    
+    
+}
+
+.title {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.ticket-box {
+    background-color: #e0e0e0;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+
+
+.btn-primary {
+    background-color: #0046ad;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    min-width: 100px; /* igualar tamaños de los 2 botones */
+}
+
+
+.btn-primary:hover {
+    background-color: #003b8e;
+    
+}
+
+
+

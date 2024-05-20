@@ -2,26 +2,36 @@
 
 {% block title %}Confirmar Cita{% endblock %}
 
-{% block body %}
-<h2>ESTOS SON LOS DATOS SELECCIONADOS.</h2>
-<p>¿DESEA CONFIRMAR SU CITA?</p>
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/confirmar-cita.css') }}">
+{% endblock %}
 
-<div>
-    <p><strong>Paciente:</strong> {{ app.user.nombre }} {{ app.user.apellidos }}</p>
-    <p><strong>Cita:</strong> {{ especialidad.nombre }}</p>
-    <p><strong>Médico:</strong> {{ medico.nombre }} {{ medico.apellidos }}</p>
-    <p><strong>Fecha y hora:</strong> {{ fechaHora|date('d/m/Y H:i') }}</p>
-    
-    <form action="{{ path('app_cita_guardar') }}" method="POST">
-        <input type="hidden" name="especialidadId" value="{{ especialidad.id }}">
-        <input type="hidden" name="medicoId" value="{{ medico.id }}">
-        <input type="hidden" name="usuarioId" value="{{ app.user.id }}">
-        <input type="hidden" name="fecha" value="{{ fechaHora|date('Y-m-d') }}">
-        <input type="hidden" name="hora" value="{{ fechaHora|date('H:i:s') }}">
-        <button type="submit" class="btn btn-success">Confirmar</button>
-    </form>
-    
-    <a href="{{ path('app_cita_calendar', {'especialidadId': especialidad.id, 'medicoId': medico.id}) }}" class="btn btn-danger">Volver</a>
+{% block body %}
+<div class="confirmacion-container">
+    <h2>ESTOS SON LOS DATOS SELECCIONADOS.</h2>
+    <p>¿DESEA CONFIRMAR SU CITA?</p>
+
+    <div class="datos-cita">
+        <p>{{ app.user.nombre }} {{ app.user.apellidos }}</p>
+        <p>Cita: {{ especialidad.nombre }}</p>
+        <p>Médico: {{ medico.nombre }} {{ medico.apellidos }}</p>
+        <p>{{ fechaHora|date('d/m/Y H:i') }}</p>
+    </div>
+
+    <div class="botones">
+        <a href="{{ path('app_cita_calendar', {'especialidadId': especialidad.id, 'medicoId': medico.id}) }}" class="btn btn-secondary">Volver</a>
+        <form action="{{ path('app_cita_guardar') }}" method="POST" class="form-confirmar">
+            <input type="hidden" name="especialidadId" value="{{ especialidad.id }}">
+            <input type="hidden" name="medicoId" value="{{ medico.id }}">
+            <input type="hidden" name="usuarioId" value="{{ app.user.id }}">
+            <input type="hidden" name="fecha" value="{{ fechaHora|date('Y-m-d') }}">
+            <input type="hidden" name="hora" value="{{ fechaHora|date('H:i:s') }}">
+            <button type="submit" class="btn btn-primary">Confirmar</button>
+        </form>
+        
+    </div>
 </div>
 {% endblock %}
+
 

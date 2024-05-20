@@ -3,12 +3,14 @@
 {% block stylesheets %}
     {{ parent() }}
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="{{ asset('styles/calendar.css') }}">
 {% endblock %}
 
 {% block title %}Calendario{% endblock %}
 
 {% block body %}
-<h1>Selecciona la Fecha y hora de tu Cita</h1>
+<div class="calendar-container">
+    <h2>ESCOJA SU CITA:</h2>
 
 <div id='calendar'></div>
 <div id="availableTimes"></div>
@@ -32,7 +34,14 @@ así evito mezclar twig y js, las variables manipuladas por js se manejan solo e
 <!-- Botón para confirmar la cita, inicialmente oculto -->
 <button id="confirmButton" class="btn btn-success" style="display:none;" onclick="confirmCita()">Confirmar cita</button>
 
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5/main.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5/locales/es.js"></script>
 <script>
 
      var selectedDate = null; //defino aquí la variable para asegurar esté disponible en eventos onclick

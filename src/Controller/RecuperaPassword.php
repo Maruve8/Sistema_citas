@@ -58,7 +58,7 @@ class RecuperaPassword extends AbstractController
 
     #[Route('/resetearpassword/{token}', name: 'resetear_password', methods: ['GET', 'POST'])]
     public function reset(Request $request, string $token, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
-    {   
+    {
         $usuario = $entityManager->getRepository(Usuario::class)->findOneBy(['resetToken' => $token]);
 
         if (!$usuario) {
@@ -92,5 +92,6 @@ class RecuperaPassword extends AbstractController
         ]);
     }
 }
+
 
     
