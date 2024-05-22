@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmación de Cita</title>
+</head>
+<body>
+    <h1>Confirmación de Cita</h1>
+    <p>Hola {{ app.user.nombre }},</p>
+    <p>Tu cita con el médico {{ medico.nombre }} {{ medico.apellidos }} para la consulta de {{ especialidad.nombre }} ha sido registrada con éxito.</p>
+    <p>Detalles de la cita:</p>
+    <ul>
+        <li>Fecha: {{ fechaHora|date('d/m/Y') }}</li>
+        <li>Hora: {{ fechaHora|date('H:i') }}</li>
+    </ul>
+    <p>Gracias por confiar en nosotros.</p>
+</body>
+</html>

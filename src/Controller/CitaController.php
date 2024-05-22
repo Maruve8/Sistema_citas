@@ -16,6 +16,8 @@ use App\Entity\Medico;
 use App\Entity\Especialidad;
 use App\Form\CitaFechaFormType;
 use App\Entity\Usuario;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 
 
@@ -219,7 +221,7 @@ public function confirmarCita(EntityManagerInterface $entityManager, $especialid
 }
 
 #[Route('/confirmar-cita/guardar', name: 'app_cita_guardar', methods: ['POST'])]
-public function guardarCita(Request $request, EntityManagerInterface $entityManager): Response
+public function guardarCita(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
 {
     $especialidadId = $request->request->get('especialidadId');
     $medicoId = $request->request->get('medicoId');
@@ -245,12 +247,32 @@ public function guardarCita(Request $request, EntityManagerInterface $entityMana
     $entityManager->persist($cita);
     $entityManager->flush();
 
+    // Enviar correo de confirmación
+    $this->enviarCorreoConfirmacion($cita, $mailer);
+
     return $this->redirectToRoute('app_cita_success', [
         'especialidadId' => $especialidadId,
         'medicoId' => $medicoId,
         'fechaHora' => $fechaHora->format('Y-m-d H:i:s')
     ]);
 }
+
+private function enviarCorreoConfirmacion(Cita $cita, MailerInterface $mailer)
+    {
+        $usuario = $cita->getPaciente();
+        $email = (new Email())
+            ->from('citas.medicas.contacto@gmail.com')
+            ->to($usuario->getEmail())
+            ->subject('Confirmación de Cita')
+            ->html($this->renderView('email/confirmacion.html.twig', [
+                'usuario' => $usuario,
+                'medico' => $cita->getMedico(),
+                'especialidad' => $cita->getEspecialidad(),
+                'fechaHora' => $cita->getFechaHora(),
+            ]));
+
+        $mailer->send($email);
+    }
 
 #[Route('/cita/success/{especialidadId}/{medicoId}/{fechaHora}', name: 'app_cita_success')]
 public function citaSuccess(EntityManagerInterface $entityManager, int $especialidadId, int $medicoId, string $fechaHora): Response
