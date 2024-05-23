@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestionar Usuarios{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/usuarios.css') }}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block body %}
+<h1>Gestionar Usuarios</h1>
+<table id="usuariosTable" class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.id }}</td>
+                <td>{{ usuario.nombre }} {{ usuario.apellidos }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>
+                    <button class="btn btn-primary editar-usuario" data-id="{{ usuario.id }}" data-toggle="modal" data-target="#editarUsuarioModal">Editar</button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal editar usuarios-->
+<div class="modal fade" id="editarUsuarioModal" tabindex="-1" aria-labelledby="editarUsuarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarUsuarioModalLabel">Editar Usuario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editarUsuarioForm">
+                    <input type="hidden" id="usuarioId" name="id">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="apellidos">Apellidos</label>
+                        <input type="text" class="form-control" id="apellidos" name="apellidos">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="text" class="form-control" id="telefono" name="telefono">
+                    </div>
+                    <div class="form-group">
+                        <label for="dni">DNI</label>
+                        <input type="text" class="form-control" id="dni" name="dni">
+                    </div>
+                    <div class="form-group">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" class="form-control" id="direccion" name="direccion">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="guardarCambios">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- DataTables -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#usuariosTable').DataTable({
+                "language": {
+                    "url": "{{ asset('js/Spanish.json') }}"
+                }
+            });
+
+            const editarButtons = document.querySelectorAll('.editar-usuario');
+
+            editarButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const usuarioId = this.dataset.id;
+                    fetch(`/admin/usuarios/${usuarioId}/editar`)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('usuarioId').value = data.id;
+                            document.getElementById('nombre').value = data.nombre;
+                            document.getElementById('apellidos').value = data.apellidos;
+                            document.getElementById('email').value = data.email;
+                            document.getElementById('telefono').value = data.telefono;
+                            document.getElementById('dni').value = data.dni;
+                            document.getElementById('direccion').value = data.direccion;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching user data:', error);
+                        });
+                });
+            });
+
+            document.getElementById('guardarCambios').addEventListener('click', function() {
+                const formData = new FormData(document.getElementById('editarUsuarioForm'));
+                fetch(`/admin/usuarios/guardar`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error al guardar los cambios');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+
+
+        
+        });
+    </script>
+{% endblock %}
+
+
+
+

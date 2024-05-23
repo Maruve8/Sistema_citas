@@ -19,37 +19,53 @@
         {% endblock %}
     </head>
     <body>
-    {% if app.user%}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{{ path('app_inicio') }}">Inicio</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
-                <li class="nav-item">
-                    <a class="nav-link {% if app.request.get('_route') == 'app_usuario_perfil' %}active{% endif %}" href="{{ path('app_usuario_perfil') }}">Mi perfil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if app.request.get('_route') == 'app_cita_online' %}active{% endif %}" href="{{ path('app_cita_online') }}">Cita Online</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if app.request.get('_route') == 'app_gestiona_citas' %}active{% endif %}" href="{{ path('app_gestiona_citas') }}">Gestiona</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if app.request.get('_route') == 'app_contacto' %}active{% endif %}" href="{{ path('app_contacto') }}">Contacta</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link {% if app.request.get('_route') == 'app_logout' %}active{% endif %}" href="{{ path('app_logout') }}">Salir</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
- {% endif %}
+     {% if app.user %}
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="{{ path('app_inicio') }}">Inicio</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li class="nav-item">
+                                    <a class="nav-link {% if app.request.get('_route') == 'admin_dashboard' %}active{% endif %}" href="{{ path('admin_dashboard') }}">Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if app.request.get('_route') == 'admin_usuarios' %}active{% endif %}" href="{{ path('admin_usuarios') }}">Usuarios</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if app.request.get('_route') == 'admin_medicos' %}active{% endif %}" href="{{ path('admin_medicos') }}">Médicos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if app.request.get('_route') == 'admin_especialidades' %}active{% endif %}" href="{{ path('admin_especialidades') }}">Especialidades</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link {% if app.request.get('_route') == 'app_usuario_perfil' %}active{% endif %}" href="{{ path('app_usuario_perfil') }}">Mi perfil</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if app.request.get('_route') == 'app_cita_online' %}active{% endif %}" href="{{ path('app_cita_online') }}">Cita Online</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if app.request.get('_route') == 'app_gestiona_citas' %}active{% endif %}" href="{{ path('app_gestiona_citas') }}">Gestiona</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if app.request.get('_route') == 'app_contacto' %}active{% endif %}" href="{{ path('app_contacto') }}">Contacta</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link {% if app.request.get('_route') == 'app_logout' %}active{% endif %}" href="{{ path('app_logout') }}">Salir</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        {% endif %}
+
 
  <div class="container mt-4">
         {% block body %}{% endblock %}
