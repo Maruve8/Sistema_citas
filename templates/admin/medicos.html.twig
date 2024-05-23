@@ -1,0 +1,244 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestionar Médicos{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+     <link rel="stylesheet" href="{{ asset('styles/admin/medicos.css') }}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+{% endblock %}
+
+
+{% block body %}
+<h1>Gestionar Médicos</h1>
+<a href="#" class="btn btn-success btn-sm" id="addNewMedico">Añadir Nuevo Médico</a>
+<table id="medicosTable" class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Especialidad</th>
+            <th>Turno</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for medico in medicos %}
+            <tr>
+                <td>{{ medico.id }}</td>
+                <td>{{ medico.nombre }}</td>
+                <td>{{ medico.especialidad.nombre }}</td>
+                <td>{{ medico.turno }}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm editar-medico" data-id="{{ medico.id }}" data-toggle="modal" data-target="#editarMedicoModal">Editar</button>
+                    <button class="btn btn-danger btn-sm eliminar-medico" data-id="{{ medico.id }}" data-toggle="modal" data-target="#eliminarMedicoModal">Eliminar</button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal Editar Médico -->
+<div class="modal fade" id="editarMedicoModal" tabindex="-1" aria-labelledby="editarMedicoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarMedicoModalLabel">Editar Médico</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editarMedicoForm">
+                    <input type="hidden" id="medicoId" name="id">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="apellidos">Apellidos</label>
+                        <input type="text" class="form-control" id="apellidos" name="apellidos">
+                    </div>
+                    <div class="form-group">
+                        <label for="turno">Turno</label>
+                        <select class="form-control" id="turno" name="turno">
+                            <option value="manana">Mañana</option>
+                            <option value="tarde">Tarde</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="especialidad">Especialidad</label>
+                        <select class="form-control" id="especialidad" name="especialidad">
+                            <option value="1">Medicina Familiar</option>
+                            <option value="2">Pediatría</option>
+                            <option value="3">Dermatología</option>
+                            <option value="4">Cardiología</option>
+                            <option value="5">Neumología</option>
+                            <option value="6">Ginecología</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="guardarCambiosMedico">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Eliminar Médico -->
+<div class="modal fade" id="eliminarMedicoModal" tabindex="-1" aria-labelledby="eliminarMedicoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eliminarMedicoModalLabel">Eliminar Médico</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar este médico?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmarEliminarMedico">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Añadir Médico -->
+<div class="modal fade" id="añadirMedicoModal" tabindex="-1" aria-labelledby="añadirMedicoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="añadirMedicoModalLabel">Añadir Nuevo Médico</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="añadirMedicoForm">
+                    <div class="form-group">
+                        <label for="nuevoNombre">Nombre</label>
+                        <input type="text" class="form-control" id="nuevoNombre" name="nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevoApellidos">Apellidos</label>
+                        <input type="text" class="form-control" id="nuevoApellidos" name="apellidos">
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevoTurno">Turno</label>
+                        <select class="form-control" id="nuevoTurno" name="turno">
+                            <option value="manana">Mañana</option>
+                            <option value="tarde">Tarde</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevoEspecialidad">Especialidad</label>
+                        <select class="form-control" id="nuevoEspecialidad" name="especialidad">
+                            <option value="1">Medicina Familiar</option>
+                            <option value="2">Pediatría</option>
+                            <option value="3">Dermatología</option>
+                            <option value="4">Cardiología</option>
+                            <option value="5">Neumología</option>
+                            <option value="6">Ginecología</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="guardarNuevoMedico">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+ {{ parent() }}
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#medicosTable').DataTable({
+                "language": {
+                    "url": "{{ asset('js/Spanish.json') }}"
+                }
+            });
+
+            // Editar médico
+            $('.editar-medico').on('click', function() {
+                const medicoId = $(this).data('id');
+                $.get(`/admin/medicos/${medicoId}/editar`, function(data) {
+                    $('#medicoId').val(data.id);
+                    $('#nombre').val(data.nombre);
+                    $('#apellidos').val(data.apellidos);
+                    $('#turno').val(data.turno);
+                    $('#especialidad').val(data.especialidad.id);
+                });
+            });
+
+            // Guardar cambios médico
+            $('#guardarCambiosMedico').on('click', function() {
+                const formData = $('#editarMedicoForm').serialize();
+                $.post('/admin/medicos/guardar', formData, function(data) {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error al guardar los cambios');
+                    }
+                });
+            });
+
+            // Eliminar médico
+            $('.eliminar-medico').on('click', function() {
+                const medicoId = $(this).data('id');
+                $('#confirmarEliminarMedico').data('id', medicoId);
+            });
+
+            $('#confirmarEliminarMedico').on('click', function() {
+                const medicoId = $(this).data('id');
+                $.ajax({
+                    url: `/admin/medicos/${medicoId}/eliminar`,
+                    type: 'POST',
+                    success: function(data) {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert('Error al eliminar el médico');
+                        }
+                    }
+                });
+            });
+
+            // Añadir nuevo médico
+            $('#guardarNuevoMedico').on('click', function() {
+                const formData = $('#añadirMedicoForm').serialize();
+                $.post('/admin/medicos/guardar', formData, function(data) {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error al guardar el nuevo médico');
+                    }
+                });
+            });
+
+            // Añadir nuevo médico botón click
+            $('#addNewMedico').on('click', function() {
+                $('#nuevoNombre').val('');
+                $('#nuevoApellidos').val('');
+                $('#nuevoTurno').val('manana');
+                $('#nuevoEspecialidad').val('1');
+                $('#añadirMedicoModal').modal('show');
+            });
+        });
+    </script>
+{% endblock %}
+

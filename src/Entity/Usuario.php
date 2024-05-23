@@ -38,6 +38,9 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $direccion = null;
 
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $resetToken = null;
 
@@ -54,6 +57,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->citas = new ArrayCollection();
+        $this->roles = ['ROLE_USER']; // Asignar el rol predeterminado
     }
 
     public function getId(): ?int
@@ -124,7 +128,16 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return ['ROLE_USER'];  
+        $roles = $this->roles;
+        // garantizar que cada usuario tenga al menos ROLE_USER
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
     }
 
     public function eraseCredentials(): void

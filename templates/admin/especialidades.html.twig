@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestionar Especialidades{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/especialidades.css') }}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
+
+{% block body %}
+<h1>Gestionar Especialidades</h1>
+<a href="#" class="btn btn-success btn-sm" id="addNewEspecialidad">Añadir Nueva Especialidad</a>
+<table id="especialidadesTable" class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for especialidad in especialidades %}
+            <tr>
+                <td>{{ especialidad.id }}</td>
+                <td>{{ especialidad.nombre }}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm editar-especialidad" data-id="{{ especialidad.id }}" data-toggle="modal" data-target="#editarEspecialidadModal">Editar</button>
+                    <button class="btn btn-danger btn-sm eliminar-especialidad" data-id="{{ especialidad.id }}" data-toggle="modal" data-target="#eliminarEspecialidadModal">Eliminar</button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal Editar Especialidad -->
+<div class="modal fade" id="editarEspecialidadModal" tabindex="-1" aria-labelledby="editarEspecialidadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarEspecialidadModalLabel">Editar Especialidad</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editarEspecialidadForm">
+                    <input type="hidden" id="especialidadId" name="id">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <input type="text" class="form-control" id="descripcion" name="descripcion">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="guardarCambiosEspecialidad">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Eliminar Especialidad -->
+<div class="modal fade" id="eliminarEspecialidadModal" tabindex="-1" aria-labelledby="eliminarEspecialidadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eliminarEspecialidadModalLabel">Eliminar Especialidad</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar esta especialidad?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmarEliminarEspecialidad">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Añadir Especialidad -->
+<div class="modal fade" id="añadirEspecialidadModal" tabindex="-1" aria-labelledby="añadirEspecialidadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="añadirEspecialidadModalLabel">Añadir Nueva Especialidad</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="añadirEspecialidadForm">
+                    <div class="form-group">
+                        <label for="nuevoNombre">Nombre</label>
+                        <input type="text" class="form-control" id="nuevoNombre" name="nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevoDescripcion">Descripción</label>
+                        <input type="text" class="form-control" id="nuevoDescripcion" name="descripcion">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="guardarNuevaEspecialidad">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#especialidadesTable').DataTable({
+                "language": {
+                    "url": "{{ asset('js/Spanish.json') }}"
+                }
+            });
+
+            // Editar especialidad
+            $('.editar-especialidad').on('click', function() {
+                const especialidadId = $(this).data('id');
+                $.get(`/admin/especialidades/${especialidadId}/editar`, function(data) {
+                    $('#especialidadId').val(data.id);
+                    $('#nombre').val(data.nombre);
+                    $('#descripcion').val(data.descripcion);
+                });
+            });
+
+            // Guardar cambios especialidad
+            $('#guardarCambiosEspecialidad').on('click', function() {
+                const formData = $('#editarEspecialidadForm').serialize();
+                $.post('/admin/especialidades/guardar', formData, function(data) {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error al guardar los cambios');
+                    }
+                });
+            });
+
+            // Eliminar especialidad
+            $('.eliminar-especialidad').on('click', function() {
+                const especialidadId = $(this).data('id');
+                $('#confirmarEliminarEspecialidad').data('id', especialidadId);
+            });
+
+            $('#confirmarEliminarEspecialidad').on('click', function() {
+                const especialidadId = $(this).data('id');
+                $.ajax({
+                    url: `/admin/especialidades/${especialidadId}/eliminar`,
+                    type: 'POST',
+                    success: function(data) {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert('Error al eliminar la especialidad');
+                        }
+                    }
+                });
+            });
+
+            // Añadir nueva especialidad
+            $('#guardarNuevaEspecialidad').on('click', function() {
+                const formData = $('#añadirEspecialidadForm').serialize();
+                $.post('/admin/especialidades/guardar', formData, function(data) {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error al guardar la nueva especialidad');
+                    }
+                });
+            });
+
+            // Añadir nueva especialidad botón click
+            $('#addNewEspecialidad').on('click', function() {
+                $('#nuevoNombre').val('');
+                $('#nuevoDescripcion').val('');
+                $('#añadirEspecialidadModal').modal('show');
+            });
+        });
+    </script>
+{% endblock %}

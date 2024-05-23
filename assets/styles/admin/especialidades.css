@@ -1,0 +1,12 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    color: #0046ad; 
+    margin-top: 50px;
+    margin-bottom: 30px;
+}

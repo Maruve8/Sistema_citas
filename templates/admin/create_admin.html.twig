@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Crear Administrador{% endblock %}
+
+{% block body %}
+<h1>Crear Administrador</h1>
+
+{{ form_start(form) }}
+    {{ form_row(form.nombre) }}
+    {{ form_row(form.apellidos) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.password) }}
+    <button class="btn btn-primary">{{ form_row(form.save) }}</button>
+{{ form_end(form) }}
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{% endblock %}
