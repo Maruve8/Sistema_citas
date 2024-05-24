@@ -13,8 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Medico;
 use App\Entity\Especialidad;
 use App\Repository\UsuarioRepository;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
+
 
 
 class AdminController extends AbstractController

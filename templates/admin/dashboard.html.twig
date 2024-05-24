@@ -20,6 +20,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const datosCitas = {{ datosCitas|raw }};
+    //lo tengo que poner en inglés, en español no me funciona el gráfico
     const diasSemana = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     const concurrencia = diasSemana.map(dia => datosCitas[dia] || 0);
 
@@ -47,3 +48,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
+
+
