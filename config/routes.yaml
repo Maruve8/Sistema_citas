@@ -14,3 +14,7 @@ index:
 app_login:
     path: /login
     controller: App\Controller\SecurityController::login
+
+send_test_email:
+    path: /test-email
+    controller: App\Controller\EmailTestController::sendTestEmail
