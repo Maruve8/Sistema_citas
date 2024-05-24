@@ -52,10 +52,25 @@ así evito mezclar twig y js, las variables manipuladas por js se manejan solo e
     var usuarioId = '{{ usuario.id }}'
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
+        locale: 'es', // idioma a español
+        firstDay: 1, // lunes primer día de la semana
+        hiddenDays: [0, 6], // Oculta domingos y sábados 
         initialView: 'dayGridMonth',
         validRange: {
             start: new Date().toISOString().split('T')[0] // Restringe las fechas anteriores a hoy
         },
+        headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek'
+            },
+            buttonText: {
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                list: 'Agenda'
+            },
+
         dateClick: function(info) {
             selectedDate = info.dateStr;  // actualiza la variable global selectdate
 
