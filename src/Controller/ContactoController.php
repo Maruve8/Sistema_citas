@@ -38,7 +38,7 @@ class ContactoController extends AbstractController
                 ));
 
             try {
-                // Enviar el correo electrónico a la cola
+                // Enviar el correo electrónico a la cola del worker
                 $bus->dispatch(new SendEmailMessage($email));
                 $logger->info('Correo enviado a la cola para procesar', ['email' => $email]);
 

@@ -23,7 +23,7 @@ class AdminDashboardController extends AbstractController
     private function obtenerDatosCitas(CitaRepository $citaRepository): array
     {
         $datos = [];
-        $diasSemana = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        $diasSemana = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; //lo tengo que poner en inglés para que me funcione el gráfico
         foreach ($diasSemana as $dia) {
             $datos[$dia] = 0;
         }

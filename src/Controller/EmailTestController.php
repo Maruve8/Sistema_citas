@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
+//Pruebas de fallos con el envío de correos
 class EmailTestController extends AbstractController
 {
     #[Route('/test-email', name: 'test_email')]
