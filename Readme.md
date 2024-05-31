@@ -32,22 +32,22 @@ Clona el repositorio desde GitHub:
 
 ## Configuración de Base de Datos
 
-    ### Creación de la base de datos
+- Creación de la base de datos
     Abre el panel de XAMPP y ejecuta los servicios de Apache y MySQL. Accede a phpMyAdmin (http://localhost/phpmyadmin) y crea una nueva base de datos citas_medicas.
 
-    ### Archivo .env
+- Archivo .env
     En el archivo .env local, la configuración debe aparecer: 
     DATABASE_URL="mysql://root:@127.0.0.1:3306/CITAS_MEDICAS?serverVersion=10.11.2-MariaDB&charset=utf8mb4"
     No olvides modificar tu usuario y contraseña en caso necesario.
 
-    ### Migraciones
+- Migraciones
     Ejecuta las migraciones para crear las tablas necesarias en la base de datos:
         php bin/console doctrine:migrations:migrate
     
     Si tienes problemas en la migración, puedes usar el siguiente comando:
         php bin/console doctrine:schema:update --force
     
-    ### Importación de la base de datos
+- Importación de la base de datos
     Descarga la base de datos, la cual incluye las especialidades, médicos, un usuario con    ROL_USER, y un usuario con ROL_ADMIN. 
         [Descargar Base de Datos](https://drive.google.com/file/d/14Nnd-yK89fs05obpWAPC1TE8Z69_7uef/view?usp=drive_link)
     
@@ -78,7 +78,7 @@ Para utilizar el cambio de estado de las citas de "Confirmada" a "Finalizada" un
 
 En caso de automatizar la tarea, puedes seguir los siguientes pasos.
 
-    ### Crea un script para ejecutar el comando
+- Crea un script para ejecutar el comando
     - Abre un editor de texto.
     - Crea un nuevo archvivo llamado actualizar_citas.bat.
     - Añade el siguiente contenido a este archivo:
@@ -89,7 +89,7 @@ En caso de automatizar la tarea, puedes seguir los siguientes pasos.
         (Asegúrate de cambiar la ruta si es distinta.)
     - Guarda el archivo.
 
-    ### Configura el Programador de Tareas de Windows
+- Configura el Programador de Tareas de Windows
     - Accede al Programador de Tareas
     - Selecciona "Crear Tarea"
     - Dale un nombre a la tarea y establece la seguridad en "Ejecutar con los privilegios más altos"
