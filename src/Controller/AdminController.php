@@ -195,6 +195,7 @@ public function editarEspecialidad(Especialidad $especialidad): Response
         'nombre' => $especialidad->getNombre(),
         'descripcion' => $especialidad->getDescripción()
     ];
+    
 
     return $this->json($data);
 }
